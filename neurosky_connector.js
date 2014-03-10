@@ -42,6 +42,23 @@ client.on('data', function(data) {
 });
 
 
+/* Message types */
+/* - Connection { poorSignalLevel: 200 } */
+/* - Brain json { eSense: { attention: 35, meditation: 48 },
+				  eegPower:
+				   { delta: 5913,
+					 theta: 20915,
+					 lowAlpha: 1085,
+					 highAlpha: 3006,
+					 lowBeta: 11308,
+					 highBeta: 6023,
+					 lowGamma: 7044,
+					 highGamma: 3128 },
+				  poorSignalLevel: 0 } (Signal level drops to 200 when clips are removed)
+*/
+/* - Blink      { blinkStrength: 45 } */
+/* - Raw EEG    { rawEeg: 60 } */
+
 // Add a 'close' event handler for the client socket
 client.on('close', function() {
 	// write session end
