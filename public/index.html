@@ -1,1 +1,91 @@
-the index
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=UTF-8>
+		<title>brain.json</title>
+
+		<link rel="stylesheet" href="/styles/rickshaw.css">
+
+		<script src="/vendor/jquery-1.11.0.js"></script>
+		<script src="/vendor/d3.v3.js"></script>
+		<script src="/vendor/d3.layout.min.js"></script>
+		<script src="/vendor/rickshaw.js"></script>
+	</head>
+
+	<body>
+		<div id="chart"></div>
+		<div id="timeline"></div>
+		<div id="preview"></div>
+		<div id="legend"></div>
+
+		<script>
+			$.get( "/eeg.json", function( json ) {
+
+				var attention  = new Array();
+				var meditation = new Array();
+
+				$.each(json, function(index, eeg_event) {
+					var timestamp = new Date(eeg_event.created_at).getTime();
+
+					attention.push( {x: timestamp, y: eeg_event.eSense.attention });
+					meditation.push({x: timestamp, y: eeg_event.eSense.meditation});
+				});
+
+				var palette = new Rickshaw.Color.Palette();
+
+				var graph   = new Rickshaw.Graph({
+					element: document.querySelector("#chart"),
+					width: 1000,
+					height: 250,
+					renderer: 'area',
+					unstack: false,
+					interpolation: 'step-before',
+					series: [
+						{ name: "Attention",  data: attention,  color: palette.color(), scale: d3.scale.linear().domain([0, 200])},
+						{ name: "Meditation", data: meditation, color: palette.color(), scale: d3.scale.linear().domain([0, 200])},
+					]
+				});
+
+				graph.render();
+
+
+				var legend = new Rickshaw.Graph.Legend({
+					element: document.querySelector('#legend'),
+					graph: graph
+				});
+
+				var hover = new Rickshaw.Graph.HoverDetail({
+					graph: graph
+				});
+
+				var shelving = new Rickshaw.Graph.Behavior.Series.Toggle({
+					graph: graph,
+					legend: legend
+				});
+
+				var axes = new Rickshaw.Graph.Axis.Time({
+					graph: graph
+				});
+				axes.render();
+
+				var annotator = new Rickshaw.Graph.Annotate({
+					graph: graph,
+					element: document.getElementById('timeline')
+				});
+
+				var preview = new Rickshaw.Graph.RangeSlider.Preview({
+					graph: graph,
+					element: document.getElementById('preview'),
+				});
+
+
+				/* Add blinks? and triggered events */
+				annotator.add(meditation[50].x, "An important event");
+				annotator.add(attention[175].x, "Another event");
+				annotator.update();
+			});
+
+		</script>
+
+	</body>
+</html>
