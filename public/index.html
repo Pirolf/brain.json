@@ -32,6 +32,7 @@
 				});
 
 				var palette = new Rickshaw.Color.Palette();
+				// palette.color()
 
 				var graph   = new Rickshaw.Graph({
 					element: document.querySelector("#chart"),
@@ -41,8 +42,8 @@
 					unstack: false,
 					interpolation: 'step-before',
 					series: [
-						{ name: "Attention",  data: attention,  color: palette.color(), scale: d3.scale.linear().domain([0, 200])},
-						{ name: "Meditation", data: meditation, color: palette.color(), scale: d3.scale.linear().domain([0, 200])},
+						{ name: "Attention",  data: attention,  color: "rgba(154,193,109, 0.75)", scale: d3.scale.linear().domain([0, 100])},
+						{ name: "Meditation", data: meditation, color: "rgba(  4, 31, 61, 0.8 )", scale: d3.scale.linear().domain([0, 100])},
 					]
 				});
 
