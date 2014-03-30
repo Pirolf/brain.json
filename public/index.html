@@ -23,27 +23,64 @@
 
 				var attention  = new Array();
 				var meditation = new Array();
+				
+				var delta      = new Array();
+				var theta      = new Array();
+				var low_alpha  = new Array();
+				var high_alpha = new Array();
+				var low_beta   = new Array();
+				var high_beta  = new Array();
+				var low_gamma  = new Array();
+				var high_gamma = new Array();
 
 				$.each(json, function(index, eeg_event) {
 					var timestamp = new Date(eeg_event.created_at).getTime();
 
 					attention.push( {x: timestamp, y: eeg_event.eSense.attention });
 					meditation.push({x: timestamp, y: eeg_event.eSense.meditation});
+
+					delta.push     ({x: timestamp, y: eeg_event.eegPower.delta});
+					theta.push     ({x: timestamp, y: eeg_event.eegPower.theta});
+					low_alpha.push ({x: timestamp, y: eeg_event.eegPower.lowAlpha});
+					high_alpha.push({x: timestamp, y: eeg_event.eegPower.highAlpha});
+					low_beta.push  ({x: timestamp, y: eeg_event.eegPower.lowBeta});
+					high_beta.push ({x: timestamp, y: eeg_event.eegPower.highBeta});
+					low_gamma.push ({x: timestamp, y: eeg_event.eegPower.lowGamma});
+					high_gamma.push({x: timestamp, y: eeg_event.eegPower.highGamma});
 				});
 
 				var palette = new Rickshaw.Color.Palette();
 				// palette.color()
 
+				var min = Number.MAX_VALUE;
+				var max = Number.MIN_VALUE;
+				for (i = 0; i < delta.length; i++) {
+					min = Math.min(min, delta[i].y);
+					max = Math.max(max, delta[i].y);
+				}
+
+				var wave_scale  = d3.scale.log().domain([min, max]);
+				var sense_scale = d3.scale.linear().domain([0, 100]);
+
 				var graph   = new Rickshaw.Graph({
 					element: document.querySelector("#chart"),
 					width: 1000,
 					height: 250,
-					renderer: 'area',
-					unstack: false,
-					interpolation: 'step-before',
+					renderer: 'line', // area
+					unstack: true,
+					interpolation: 'cardinal', // step-before
 					series: [
-						{ name: "Attention",  data: attention,  color: "rgba(154,193,109, 0.75)", scale: d3.scale.linear().domain([0, 100])},
-						{ name: "Meditation", data: meditation, color: "rgba(  4, 31, 61, 0.8 )", scale: d3.scale.linear().domain([0, 100])},
+						//{ name: "Attention",  data: attention,  color: "rgba(154,193,109, 0.75)", scale: sense_scale},
+						//{ name: "Meditation", data: meditation, color: "rgba(  4, 31, 61, 0.8 )", scale: sense_scale},
+
+						{ name: "Delta",      data: delta,      color: palette.color(), scale: wave_scale},
+						{ name: "Theta",      data: theta,      color: palette.color(), scale: wave_scale},
+						{ name: "Low Alpha",  data: low_alpha,  color: palette.color(), scale: wave_scale},
+						{ name: "High Alpha", data: high_alpha, color: palette.color(), scale: wave_scale},
+						{ name: "Low Beta",   data: low_beta,   color: palette.color(), scale: wave_scale},
+						{ name: "High Beta",  data: high_beta,  color: palette.color(), scale: wave_scale},
+						{ name: "Low Gamma",  data: low_gamma,  color: palette.color(), scale: wave_scale},
+						{ name: "High Gamma", data: high_gamma, color: palette.color(), scale: wave_scale}
 					]
 				});
 
