@@ -9,3 +9,9 @@ brain.json
 ----------
 
 A node app for recording and exploring Neurosky Mindwave brain activity.
+
+
+requirements
+------------
+
+http://developer.neurosky.com/docs/doku.php?id=thinkgear_connector_tgc
